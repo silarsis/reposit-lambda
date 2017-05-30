@@ -6,8 +6,8 @@
         "fromForkPublicRepo": {
             "build": false,
             "inheritSecrets": false,
-            "allowConfigOverrides": ["cmd", "env"],
+            "allowConfigOverrides": ["cmd", "env"]
         },
-        "fromForkPrivateRepo": false,
+        "fromForkPrivateRepo": false
     }
 }
