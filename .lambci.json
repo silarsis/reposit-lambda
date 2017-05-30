@@ -1,0 +1,3 @@
+{
+    "cmd": "pip install https://github.com/silarsis/rp-python-client -t reposit"
+}
