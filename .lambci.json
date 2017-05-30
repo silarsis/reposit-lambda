@@ -9,5 +9,5 @@
             "allowConfigOverrides": ["cmd", "env"],
         },
         "fromForkPrivateRepo": false,
-    },
+    }
 }
