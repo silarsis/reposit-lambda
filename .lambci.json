@@ -1,5 +1,5 @@
 {
-    "cmd": "pip install git+https://github.com/silarsis/rp-python-client -t reposit",
+    "cmd": "./build.sh",
     "pullRequests": {
         "fromSelfPublicRepo": true,
         "fromSelfPrivateRepo": true,
