@@ -1,3 +1,13 @@
 {
-    "cmd": "pip install git+https://github.com/silarsis/rp-python-client -t reposit"
+    cmd: "pip install git+https://github.com/silarsis/rp-python-client -t reposit",
+    pullRequests: {
+        fromSelfPublicRepo: true, // Pull requests from same (private) repo will build
+        fromSelfPrivateRepo: true, // Pull requests from same (public) repo will build
+        fromForkPublicRepo: { // Restrictions for pull requests from forks on public repos
+            build: false,
+            inheritSecrets: false, // Don't expose secretEnv values in the build command environment
+            allowConfigOverrides: ['cmd', 'env'], // Only allow file config to override cmd and env properties
+        },
+        fromForkPrivateRepo: false, // Pull requests from forked private repos won't run at all
+    },
 }
