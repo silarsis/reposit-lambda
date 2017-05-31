@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/bin/bash -ex
 
 # pip install all the things
 pip install git+https://github.com/silarsis/rp-python-client -t reposit
-pip install boto3
+find / -iname boto3
 # zip up the dir
 cd reposit && python -m zipfile -c ../reposit.zip . && cd ..
 # push the zipped dir to S3
