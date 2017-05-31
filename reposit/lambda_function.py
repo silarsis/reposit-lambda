@@ -48,7 +48,7 @@ def on_intent(intent_request, session):
     print("on_intent requestId=" + intent_request['requestId'] \
         + ", sessionId=" + session['sessionId'])
     intent_name = intent_request['intent']['name']
-    if intent_name == "reposit":
+    if intent_name == "status":
         return get_status_response()
     elif intent_name == "AMAZON.HelpIntent":
         return get_welcome_response()
