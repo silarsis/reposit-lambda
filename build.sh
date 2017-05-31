@@ -8,4 +8,4 @@ cd reposit && python -m zipfile -c ../reposit.zip . && cd ..
 # push the zipped dir to S3
 # ./upload.py
 # deploy to the lambda
-./deploy.py
+node ./deploy.js
