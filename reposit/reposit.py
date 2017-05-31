@@ -60,11 +60,11 @@ class Deployment:
         " Return whether we're feeding the grid, charging, using battery, or flat and using power "
         soc = self.battery_historical_soc
         if soc[-1][1] > soc[-2][1]:
-            return "charging"
+            return "charging your battery"
         if soc[-1][1] < soc[-2][1]:
-            return "discharging"
+            return "using battery power"
         if self.feeding_grid:
-            return "feeding"
+            return "feeding power to the grid"
         return "flat"
 
 class Reposit:
