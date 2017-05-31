@@ -115,8 +115,9 @@ def status():
     " Return a status for the alexa skill "
     client = Reposit()
     key = client.userkeys[-1]
-    answer = "Your battery is " + str(client.deployment(key).charge_percent) \
-        + "%% full. You are currently " + client.deployment(key).status
+    percent = "%.0f" % client.deployment(key).charge_percent
+    answer = "Your battery is " + percent \
+        + "% full. You are currently " + client.deployment(key).status
     print("Reposit status message: " + answer)
     client.logout()
     return answer
