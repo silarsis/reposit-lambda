@@ -34,6 +34,7 @@ def get_status_response():
     session_attributes = {}
     speech_output = reposit.status()
     should_end_session = True
+    print(speech_output)
     return build_response(
         session_attributes, build_speechlet_response(speech_output, should_end_session))
 
