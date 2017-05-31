@@ -9,5 +9,6 @@
             "allowConfigOverrides": ["cmd", "env"]
         },
         "fromForkPrivateRepo": false
-    }
+    },
+    "s3PublicSecretNames": false
 }
