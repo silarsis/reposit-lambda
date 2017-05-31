@@ -200,6 +200,21 @@
               "Resource": {"Fn::Join": ["", ["arn:aws:sns:*:*:", {"Ref": "AWS::StackName"}, "-*"]]}
             }
           }
+        },{
+          "PolicyName": "UpdateLambda",
+          "PolicyDocument": {
+            "Statement": {
+              "Effect": "Allow",
+              "Action": [
+                "lambda:UploadFunction",
+                "lambda:UpdateFunctionCode",
+                "lambda:UpdateFunctionConfiguration"
+              ],
+              "Resource": [
+                "arn:aws:lambda:us-east-1:566964866387:function:reposit"
+              ]
+            }
+          }
         }]
       }
     },
