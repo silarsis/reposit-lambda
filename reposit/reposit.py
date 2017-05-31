@@ -111,5 +111,15 @@ def test():
         print("You are currently %s" % client.deployment(key).status)
     client.logout()
 
+def status():
+    " Return a status for the alexa skill "
+    client = Reposit()
+    for key in client.userkeys:
+        answer = "Your battery is " + str(client.deployment(key).charge_percent) \
+            + "%% full" \
+            + "You are currently " + client.deployment(key).status
+    client.logout()
+    return answer
+
 if __name__ == '__main__':
     test()
