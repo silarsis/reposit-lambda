@@ -12,3 +12,6 @@ the deploy process installs all the libraries.
 The [.lambci.json](./.lambci.json) file contains instructions for lambci.
 
 The [build.sh](./build.sh) script is the build/deploy process.
+
+The [deploy.js](./deploy.js) script deploys the code to Lambda. Used js because
+the aws-sdk libs are available inside the lambci lambda.
