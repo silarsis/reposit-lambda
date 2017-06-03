@@ -6,7 +6,7 @@ Simple client
 from __future__ import print_function
 from os  import environ
 import swagger_client
-import requests
+import grequests
 
 class Deployment:
     " A deployment is essentially a house, I think "
