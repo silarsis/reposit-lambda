@@ -15,3 +15,9 @@ The [build.sh](./build.sh) script is the build/deploy process.
 
 The [deploy.js](./deploy.js) script deploys the code to Lambda. Used js because
 the aws-sdk libs are available inside the lambci lambda.
+
+To Do:
+
+* grequests and pre-loading so we speed things up
+* shorten the time period for the data we're requesting
+* implement some way of others using this - credential cache + app
