@@ -14,7 +14,7 @@ class Deployment:
     def __init__(self, userkey, api):
         self._userkey = userkey
         self._api = api
-        self._cache = ExpiringDict(max_age_seconds=300)
+        self._cache = ExpiringDict(max_len=10, max_age_seconds=300)
 
     @property
     def battery_historical_soc(self):
