@@ -7,66 +7,71 @@ from __future__ import print_function
 from os  import environ
 import swagger_client
 import grequests
+from expiringdict import ExpiringDict
 
 class Deployment:
     " A deployment is essentially a house, I think "
     def __init__(self, userkey, api):
         self._userkey = userkey
         self._api = api
-
-    @property
-    def capacity(self):
-        " Return battery capacity "
-        resp = self._api.deployments_userkey_battery_capacity_get(self._userkey)
-        return resp.to_dict()['battery_capacity']
+        self._cache = ExpiringDict(max_age_seconds=300)
 
     @property
     def battery_historical_soc(self):
         " Historical state of charge information - list of [timestamp, charge]"
-        resp = self._api.deployments_userkey_battery_historical_soc_get(self._userkey)
-        soc = resp.to_dict()['battery_soc']
-        soc.sort()
-        return soc
+        resp = self._cache.get('battery_soc')
+        if not resp:
+            resp = self._cache['battery_soc'] \
+                = self._api.deployments_userkey_battery_historical_soc_get(self._userkey)
+        return resp.to_dict()
+
+    @property
+    def meter_historical_p(self):
+        " Return true if we're feeding power to the grid "
+        resp = self._cache.get('meter_historical_p')
+        if not resp:
+            resp = self._cache['meter_historical_p'] \
+                = self._api.deployments_userkey_meter_historical_p_get(self._userkey)
+        return resp.to_dict()
+
+    @property
+    def capacity(self):
+        " Return battery capacity "
+        return self.battery_historical_soc['battery_capacity']
 
     @property
     def charge(self):
         " Return the current battery charge "
-        return self.battery_historical_soc[-1][1]
-
-    @property
-    def charge_percent(self):
-        " Percent charged "
-        resp = self._api.deployments_userkey_battery_historical_soc_get(self._userkey)
-        cap = resp.to_dict()['battery_capacity']
-        soc = resp.to_dict()['battery_soc']
-        soc.sort()
-        return (soc[-1][1] / cap) * 100
+        return self.battery_historical_soc['battery_soc'][-1][1]
 
     @property
     def charging(self):
         " Return true if currently charging, false otherwise "
-        soc = self.battery_historical_soc
-        return soc[-1][1] > soc[-2][1]
+        charge = self.battery_historical_soc['battery_soc']
+        return charge[-1][1] > charge[-2][1]
+
+    @property
+    def charge_percent(self):
+        " Percent charged "
+        return (self.charge / self.capacity) * 100
 
     @property
     def feeding_grid(self):
         " Return true if we're feeding power to the grid "
-        resp = self._api.deployments_userkey_meter_historical_p_get(self._userkey)
-        soc = resp.to_dict()['meter_p']
-        soc.sort()
-        return soc[-1][1] < 0
+        feed = self.meter_historical_p['meter_p']
+        return feed[-1][1] < 0
 
     @property
     def status(self):
         " Return whether we're feeding the grid, charging, using battery, or flat and using power "
         soc = self.battery_historical_soc
-        if soc[-1][1] > soc[-2][1]:
+        if self.charge:
             return "charging your battery"
         if soc[-1][1] < soc[-2][1]:
             return "using battery power"
         if self.feeding_grid:
             return "feeding power to the grid"
-        return "flat"
+        return "running off grid power"
 
 class Reposit:
     """
@@ -85,10 +90,12 @@ class Reposit:
         self._api = swagger_client.DefaultApi()
         self._token = self._api.auth_login_get().to_dict()['rp_token']
         swagger_client.configuration.api_key['Authorization'] = "RP-TOKEN %s" % self._token
+        self._deployments = [Deployment(key, self._api) for key in self.userkeys]
 
-    def deployment(self, userkey):
-        " Return a deployment "
-        return Deployment(userkey, self._api)
+    @property
+    def deployments(self):
+        " Return a list of deployment objects "
+        return self._deployments
 
     @property
     def token(self):
@@ -107,18 +114,17 @@ class Reposit:
 def test():
     " Brief method to test some stuff "
     client = Reposit()
-    for key in client.userkeys:
-        print("Your battery is %0.2f%% full" % (client.deployment(key).charge_percent))
-        print("You are currently %s" % client.deployment(key).status)
+    for deployment in client.deployments:
+        print("Your battery is %0.2f%% full" % (deployment.charge_percent))
+        print("Your house is %s" % deployment.status)
     client.logout()
 
 def status():
     " Return a status for the alexa skill "
     client = Reposit()
-    key = client.userkeys[-1]
-    percent = "%.0f" % client.deployment(key).charge_percent
+    percent = "%.0f" % client.deployments[-1].charge_percent
     answer = "Your battery is " + percent \
-        + "% full. You are currently " + client.deployment(key).status
+        + "% full. Your house is " + client.deployments[-1].status
     print("Reposit status message: " + answer)
     client.logout()
     return answer
