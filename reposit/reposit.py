@@ -34,6 +34,7 @@ class Deployment:
         " Return true if we're feeding power to the grid "
         resp = self._cache.get('meter_historical_p')
         if not resp:
+            now = int(time.time())
             resp = self._cache['meter_historical_p'] \
                 = self._api.deployments_userkey_meter_historical_p_get(
                     self._userkey, end=now, start=now-300, delta_t=150)
