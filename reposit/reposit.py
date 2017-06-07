@@ -5,6 +5,7 @@ Simple client
 
 from __future__ import print_function
 from os  import environ
+import time
 import swagger_client
 import grequests
 from expiringdict import ExpiringDict
@@ -14,15 +15,17 @@ class Deployment:
     def __init__(self, userkey, api):
         self._userkey = userkey
         self._api = api
-        self._cache = ExpiringDict(max_len=10, max_age_seconds=300)
+        self._cache = ExpiringDict(max_len=10, max_age_seconds=150)
 
     @property
     def battery_historical_soc(self):
         " Historical state of charge information - list of [timestamp, charge]"
         resp = self._cache.get('battery_soc')
         if not resp:
+            now = int(time.time())
             resp = self._cache['battery_soc'] \
-                = self._api.deployments_userkey_battery_historical_soc_get(self._userkey)
+                = self._api.deployments_userkey_battery_historical_soc_get(
+                    self._userkey, end=now, start=now-300, delta_t=150)
         return resp.to_dict()
 
     @property
@@ -31,7 +34,8 @@ class Deployment:
         resp = self._cache.get('meter_historical_p')
         if not resp:
             resp = self._cache['meter_historical_p'] \
-                = self._api.deployments_userkey_meter_historical_p_get(self._userkey)
+                = self._api.deployments_userkey_meter_historical_p_get(
+                    self._userkey, end=now, start=now-300, delta_t=150)
         return resp.to_dict()
 
     @property

@@ -1,6 +1,8 @@
 # reposit-lambda
 Lambda for Alexa Reposit skill
 
+Swagger file at https://app.swaggerhub.com/apis/silarsis/repositpower/1.0.0
+
 The [deployer](./deployer/) directory contains cloudformation for the
 lambda-based build/deploy server (lambci, https://github.com/lambci/lambci).
 Note, this is manually deployed as cloudformation, not automatic - consider
