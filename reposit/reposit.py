@@ -26,6 +26,7 @@ class Deployment:
             resp = self._cache['battery_soc'] \
                 = self._api.deployments_userkey_battery_historical_soc_get(
                     self._userkey, end=now, start=now-300, delta_t=150)
+            print(resp)
         return resp.to_dict()
 
     @property
@@ -36,6 +37,7 @@ class Deployment:
             resp = self._cache['meter_historical_p'] \
                 = self._api.deployments_userkey_meter_historical_p_get(
                     self._userkey, end=now, start=now-300, delta_t=150)
+            print(resp)
         return resp.to_dict()
 
     @property
