@@ -26,6 +26,9 @@ class Deployment:
                 = self._api.deployments_userkey_battery_historical_soc_get(
                     self._userkey, start=now-600)
             print("battery_historical_soc: %s" % str(resp))
+            # Horrible hack because specifying a start seems to generate a 0 on the end for now
+            if resp['battery_soc'][-1][1] == 0:
+                del(resp['battery_soc'][-1])
         return resp.to_dict()
 
     @property
