@@ -74,7 +74,7 @@ class Deployment:
     def status(self):
         " Return whether we're feeding the grid, charging, using battery, or flat and using power "
         soc = self.battery_historical_soc['battery_soc']
-        if self.charge:
+        if self.charging:
             return "charging your battery"
         if soc[-1][1] < soc[-2][1]:
             return "using battery power"
