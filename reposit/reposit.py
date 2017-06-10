@@ -16,21 +16,25 @@ class Deployment:
         self._api = api
         self._cache = ExpiringDict(max_len=10, max_age_seconds=150)
 
+    def _get(self, key):
+        resp = self._cache.get(key)
+        if not resp:
+            now = int(time.time())
+            resp = self._cache[key] \
+                = getattr(self._api, 'deployments_userkey_%s_get' % key)(
+                    self._userkey, start=now-600)
+            print("%s: %s" % (key, str(resp)))
+        dresp = resp.to_dict()
+        # Horrible hack because specifying a start seems to generate a 0 on the end for now
+        internal_key = key.replace('_historical', '')
+        if dresp[key.replace(internal_key)][-1][1] == 0:
+            del(dresp[internal_key][-1])
+        return dresp
+
     @property
     def battery_historical_soc(self):
         " Historical state of charge information - list of [timestamp, charge]"
-        resp = self._cache.get('battery_soc')
-        if not resp:
-            now = int(time.time())
-            resp = self._cache['battery_soc'] \
-                = self._api.deployments_userkey_battery_historical_soc_get(
-                    self._userkey, start=now-600)
-            print("battery_historical_soc: %s" % str(resp))
-        dresp = resp.to_dict()
-        # Horrible hack because specifying a start seems to generate a 0 on the end for now
-        if dresp['battery_soc'][-1][1] == 0:
-            del(dresp['battery_soc'][-1])
-        return dresp
+        return self._get('battery_historical_soc')
 
     @property
     def meter_historical_p(self):
