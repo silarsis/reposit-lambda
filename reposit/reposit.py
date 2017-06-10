@@ -27,8 +27,7 @@ class Deployment:
         dresp = resp.to_dict()
         # Horrible hack because specifying a start seems to generate a 0 on the end for now
         internal_key = key.replace('_historical', '')
-        if dresp[internal_key][-1][1] == 0:
-            del(dresp[internal_key][-1])
+        del(dresp[internal_key][-1])
         return dresp
 
     @property
