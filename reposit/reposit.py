@@ -16,14 +16,6 @@ class Deployment:
         self._userkey = userkey
         self._api = api
         self._cache = ExpiringDict(max_len=10, max_age_seconds=150)
-        self._prime_cache()
-
-    def _prime_cache(self):
-        threads = [
-            threading.Thread(target=self._get, args=('battery_historical_soc')).start(),
-            threading.Thread(target=self._get, args=('meter_historical_p')).start()
-        ]
-        [ thr.join() for thr in threads ]
 
     def _get(self, key):
         resp = self._cache.get(key)
