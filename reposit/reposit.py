@@ -38,14 +38,7 @@ class Deployment:
     @property
     def meter_historical_p(self):
         " Return true if we're feeding power to the grid "
-        resp = self._cache.get('meter_historical_p')
-        if not resp:
-            now = int(time.time())
-            resp = self._cache['meter_historical_p'] \
-                = self._api.deployments_userkey_meter_historical_p_get(
-                    self._userkey, start=now-600)
-            print("meter_historical_p: %s" % str(resp))
-        return resp.to_dict()
+        return self._get('meter_historical_p')
 
     @property
     def capacity(self):
