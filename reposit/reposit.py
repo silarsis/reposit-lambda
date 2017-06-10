@@ -6,6 +6,7 @@ Simple client
 from __future__ import print_function
 from os  import environ
 import time
+import threading
 import swagger_client
 from expiringdict import ExpiringDict
 
@@ -15,6 +16,14 @@ class Deployment:
         self._userkey = userkey
         self._api = api
         self._cache = ExpiringDict(max_len=10, max_age_seconds=150)
+        self._prime_cache()
+
+    def _prime_cache(self):
+        threads = [
+            threading.Thread(target=self._get, args=('battery_historical_soc')).start(),
+            threading.Thread(target=self._get, args=('meter_historical_p')).start()
+        ]
+        [ thr.join() for thr in threads ]
 
     def _get(self, key):
         resp = self._cache.get(key)
@@ -57,6 +66,12 @@ class Deployment:
         return charge[-1][1] > charge[-2][1]
 
     @property
+    def discharging(self):
+        " Return true if currently using battery power, false otherwise "
+        charge = self.battery_historical_soc['battery_soc']
+        return charge[-1][1] < charge[-2][1]
+
+    @property
     def charge_percent(self):
         " Percent charged "
         return (self.charge / self.capacity) * 100
@@ -70,10 +85,9 @@ class Deployment:
     @property
     def status(self):
         " Return whether we're feeding the grid, charging, using battery, or flat and using power "
-        soc = self.battery_historical_soc['battery_soc']
         if self.charging:
             return "charging your battery"
-        if soc[-1][1] < soc[-2][1]:
+        if self.discharging:
             return "using battery power"
         if self.feeding_grid:
             return "feeding power to the grid"
