@@ -18,6 +18,14 @@ The [build.sh](./build.sh) script is the build/deploy process.
 The [deploy.js](./deploy.js) script deploys the code to Lambda. Used js because
 the aws-sdk libs are available inside the lambci lambda.
 
+Notes:
+
+I considered pre-caching the results of the requests to the API, but I'm not
+convinced of the usefulness of that - in a vast number of ocassions, we won't
+actually do both calls (battery and meter) anyway, we'll resolve via just the
+battery lookup. Instead, I've restricted the time on the queries and used the
+expiry cache.
+
 To Do:
 
 * grequests and pre-loading so we speed things up
