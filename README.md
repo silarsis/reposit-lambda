@@ -28,6 +28,5 @@ expiry cache.
 
 To Do:
 
-* grequests and pre-loading so we speed things up
 * shorten the time period for the data we're requesting
 * implement some way of others using this - credential cache + app
