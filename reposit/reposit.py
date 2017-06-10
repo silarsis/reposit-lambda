@@ -7,7 +7,6 @@ from __future__ import print_function
 from os  import environ
 import time
 import swagger_client
-import grequests
 from expiringdict import ExpiringDict
 
 class Deployment:
