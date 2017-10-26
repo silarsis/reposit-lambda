@@ -100,8 +100,8 @@ class Reposit:
         swagger_client.configuration.username = self._username
         swagger_client.configuration.password = self._password
         self._api = swagger_client.DefaultApi()
-        self._token = self._api.auth_login_get().to_dict()['rp_token']
-        swagger_client.configuration.api_key['Authorization'] = "RP-TOKEN %s" % self._token
+        self._token = self._api.auth_login_post().to_dict()['access_token']
+        swagger_client.configuration.api_key['Authorization'] = "Bearer %s" % self._token
         self._deployments = [Deployment(key, self._api) for key in self.userkeys]
 
     @property
