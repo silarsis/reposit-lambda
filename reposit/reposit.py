@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+3#!/usr/bin/env python
 """
 Simple client
 """
@@ -23,7 +23,7 @@ class Deployment:
             now = int(time.time())
             resp = self._cache[key] \
                 = getattr(self._api, 'deployments_userkey_%s_get' % key)(
-                    self._userkey, start=now-600)
+                    self._userkey, start=now-300)
             print("%s: %s" % (key, str(resp)))
         dresp = resp.to_dict()
         # Horrible hack because specifying a start seems to generate a 0 on the end for now
