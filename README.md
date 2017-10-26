@@ -30,6 +30,7 @@ To Do:
 
 * shorten the time period for the data we're requesting
 * implement some way of others using this - credential cache + app
-
+* add some new skills/queries
+* make the current ones more reliable on calculating where power is flowing
 
 
